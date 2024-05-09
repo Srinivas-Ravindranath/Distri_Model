@@ -2,64 +2,33 @@ import socket
 import json
 import numpy as np
 from kafka import KafkaConsumer, KafkaProducer
+from scipy.spatial.distance import cdist
 from tensorflow.keras.models import load_model
+from mongo_db import MongoDB
+from kafka_handler import KafkaHandler
+
+from sklearn.metrics.pairwise import cosine_similarity
 
 from load import load_data
 import threading
 
-# Load the TensorFlow model
-model_part1 = load_model('RnnModel/model_part1.h5')
-model_part3 = load_model('RnnModel/model_part3.h5')
 
-# Initialize Kafka producer
-producer = KafkaProducer(bootstrap_servers=['localhost:9092'], value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+def run_training_part_3():
 
-
-def kafka_data_processor():
-    # Kafka consumer configuration
-    df, X, artist_indices, num_artists = load_data('Dataset/spotify_data.csv')
-    output_part2 = np.loadtxt('output_part2.txt')
-    predictions = model_part3.predict(output_part2)
+    model_part3 = load_model('RnnModel/model_part3.h5')
+    mongo_cli = MongoDB()
+    data_buffer = mongo_cli.read_file_from_gridfs(file_name='output_part2.txt')
+    input_data = np.loadtxt(data_buffer)
+    predictions = model_part3.predict(input_data)
     np.savetxt('output_part3.txt', predictions)
+    mongo_cli.add_file_to_gridfs(file_path='output_part3.txt')
 
-    # # Check if selected_indices is not empty and correctly formed
-    # if len(selected_indices) == 0 or selected_indices is None:
-    #     print("No valid selected indices.")
-    #     return pd.DataFrame()
-    #
-    # # Attempt to get a proper slice of predictions
-    # try:
-    #     selected_predictions = predictions[selected_indices, :]
-    # except IndexError:
-    #     print("IndexError with selected_indices:", selected_indices)
-    #     return pd.DataFrame()
-    #
-    # print("Shape of selected predictions:", selected_predictions.shape)
-    #
-    # if selected_predictions.ndim == 1:  # If still 1D, reshape to maintain two dimensions
-    #     selected_predictions = selected_predictions.reshape(1, -1)
-    #
-    # avg_selected_predictions = np.mean(selected_predictions, axis=0)
-    # print("Shape of average selected predictions:", avg_selected_predictions.shape)
-    #
-    # # Ensure avg_selected_predictions is a 2-dimensional array
-    # avg_selected_predictions_2d = avg_selected_predictions.reshape(1, -1)
-    # print("Shape of avg_selected_predictions_2d:", avg_selected_predictions_2d.shape)
-    #
-    # # Calculate the similarity
-    # try:
-    #     distances = cdist(avg_selected_predictions_2d, predictions, metric='euclidean')
-    #     print("Successfully calculated distances.")
-    # except ValueError as e:
-    #     print("Error in calculating distances:", e)
-    #
-    #
-    # recommended_indices = np.argsort(distances[0])[:top_n + len(selected_indices)]
-    # recommended_indices = [idx for idx in recommended_indices if idx not in selected_indices][:top_n]
-    #
-    #  print(df.iloc[recommended_indices][['artist_name', 'track_name', 'track_id']])
+    kafka_handler = KafkaHandler(
+        kafka_topic='partial_inference',
+        key='inference_exists',
+        kafka_producer_topic='partial_inference',
+        kafka_producer_value=json.dumps({'inference_exists': True}).encode('utf-8')
+    )
 
+    kafka_handler.process_kafka_messages()
 
-if __name__ == "__main__":
-    # run_server(8000)
-    kafka_data_processor()

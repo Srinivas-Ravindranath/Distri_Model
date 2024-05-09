@@ -4,6 +4,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from scipy.spatial.distance import cdist
 import numpy as np
 
+
 def load_data(filename):
     """Load and preprocess data."""
     df = pd.read_csv(filename)
@@ -23,6 +24,7 @@ def load_data(filename):
     # Prepare numerical features
     numerical_features = ['year', 'danceability', 'energy', 'key', 'loudness', 'speechiness',
                           'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms']
+
     X_numerical = df[numerical_features]
     scaler = StandardScaler()
     X_numerical = scaler.fit_transform(X_numerical)
