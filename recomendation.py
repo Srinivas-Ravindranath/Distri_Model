@@ -6,6 +6,7 @@ from scipy.spatial.distance import cdist
 from tensorflow.keras.models import load_model
 from mongo_db import MongoDB
 from kafka_handler import KafkaHandler
+from load import load_data
 
 def loadPreadition():
     mongo_cli = MongoDB()
@@ -13,11 +14,11 @@ def loadPreadition():
     get_reccomendations(predictions)
 
 
-def get_reccomendations(predictions, top_n=5):
+def get_reccomendations(predictions, track_id_list, top_n=5):
     df, X, artist_indices, num_artists = load_data('Dataset/spotify_data.csv')
 
-    track_id_list = ['0u1N7fB49zmkMsfMCR4rKZ', '7r8Md4TjfBv4R71ihunoUG', '6MrQgkUAJYXETkhDsF56Pa',
-                     '6b205IRWDKpfXhWrokXEHP', '1MJ6LS0r3RWvqplQPxRuDs', '74AhjZCwVFPIFaPFQYQfco']
+    #track_id_list = ['0u1N7fB49zmkMsfMCR4rKZ', '7r8Md4TjfBv4R71ihunoUG', '6MrQgkUAJYXETkhDsF56Pa',
+     #                '6b205IRWDKpfXhWrokXEHP', '1MJ6LS0r3RWvqplQPxRuDs', '74AhjZCwVFPIFaPFQYQfco']
 
     # Compute similarities based on predictions (simple approach: cosine similarity)
     selected_indices = df.index[df['track_id'].isin(track_id_list)].tolist()

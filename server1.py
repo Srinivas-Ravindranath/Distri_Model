@@ -3,14 +3,13 @@ import numpy as np
 from mongo_db import MongoDB
 
 from load import load_data
+import json
 
 from kafka_handler import KafkaHandler
 from tensorflow.keras.models import load_model
 
-import json
 
-
-def run_training_part_1():
+def inference_part_1():
     # Load the TensorFlow model
     model_part1 = load_model('RnnModel/model_part1.h5')
     df, X, artist_indices, num_artists = load_data('Dataset/spotify_data.csv')
@@ -21,12 +20,20 @@ def run_training_part_1():
     mongo_cli = MongoDB()
     mongo_cli.add_file_to_gridfs(file_path='output_part1.txt')
 
-    kafka_handler = KafkaHandler(
-        kafka_topic='partial_inference',
-        key='inference_exists',
-        kafka_producer_topic='partial_inference',
-        kafka_producer_value=json.dumps({'inference_exists': True}).encode('utf-8')
-    )
 
-    kafka_handler.process_kafka_messages()
+def process_kafka_messages():
+    kafka_handler = KafkaHandler()
+    consumer = kafka_handler.initialize_kafka_consumer()
+    producer = kafka_handler.initialize_kafka_producer()
 
+    consumer.subscribe(topics=["partial_inference_1"])
+    while True:
+        message = consumer.poll(3000)
+        if message is None:
+            continue
+        for topic, messages in message.items():
+            for message in messages:
+                if message.value['inference_exists'] == "False":
+                    inference_part_1()
+                    producer.send("partial_inference_1", value=json.dumps({'inference_exists': True}).encode('utf-8'))
+    consumer.close()
