@@ -14,6 +14,7 @@ class KafkaHandler:
         consumer = KafkaConsumer(
             bootstrap_servers=[self.KAFKA_BROKER_URL],
             auto_offset_reset='earliest',
+            api_version=(0, 11, 5),
             value_deserializer=lambda m: json.loads(m.decode('utf-8')) if m else None
         )
 

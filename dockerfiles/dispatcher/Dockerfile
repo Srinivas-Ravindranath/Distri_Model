@@ -19,7 +19,7 @@ RUN pip install --no-binary=h5py h5py && \
     pip install --no-cache-dir -r requirements.txt
 
 # Make port 9092 available to the world outside this container
-EXPOSE 9092
+ EXPOSE 9092
 
 # Define environment variable
 ENV KAFKA_BROKER=localhost:9092
