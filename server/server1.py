@@ -1,12 +1,10 @@
 import numpy as np
-
-from mongo_db import MongoDB
-
-from load import load_data
+from tensorflow.keras.models import load_model
 import json
 
-from kafka_handler import KafkaHandler
-from tensorflow.keras.models import load_model
+from kakfa_handler.kafka_handler import KafkaHandler
+from mongo_db.mongo_db import MongoDB
+from model.load import load_data
 
 
 def inference_part_1():

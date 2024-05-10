@@ -1,11 +1,10 @@
 import os
 import time
-from splitModel import split_model
-from model import check_model_parts
-from mongo_db import MongoDB
 import json
-
-from kafka_handler import KafkaHandler
+from model.model import check_model_parts
+from model.splitModel import split_model
+from kakfa_handler.kafka_handler import KafkaHandler
+from mongo_db.mongo_db import MongoDB
 
 if __name__ == "__main__":
     print("Checking model files and connecting to Kafka...")

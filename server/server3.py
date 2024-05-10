@@ -1,10 +1,9 @@
-import socket
 import json
 import numpy as np
 from tensorflow.keras.models import load_model
-from mongo_db import MongoDB
-from kafka_handler import KafkaHandler
-from recomendation import get_reccomendations
+from mongo_db.mongo_db import MongoDB
+from kakfa_handler.kafka_handler import KafkaHandler
+from model.recomendation import get_reccomendations
 
 
 def run_training_part_3():

@@ -1,13 +1,9 @@
-import socket
 import json
 import numpy as np
-from kafka import KafkaConsumer, KafkaProducer
 from tensorflow.keras.models import load_model
-from mongo_db import MongoDB
-from kafka_handler import KafkaHandler
+from mongo_db.mongo_db import MongoDB
+from kakfa_handler.kafka_handler import KafkaHandler
 
-from load import load_data
-import threading
 
 
 def inference_part_2():
