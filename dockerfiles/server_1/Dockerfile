@@ -21,9 +21,9 @@ RUN pip install --no-binary=h5py h5py && \
 # Make port 9092 available to the world outside this container
 EXPOSE 9092
 
-# Define environment variable
-ENV KAFKA_BROKER=localhost:9092
-ENV KAFKA_TOPIC=mytopic
+## Define environment variable
+#ENV KAFKA_BROKER=localhost:9092
+#ENV KAFKA_TOPIC=mytopic
 
 # Run app.py when the container launches
 CMD ["python", "./server/server_1.py"]
