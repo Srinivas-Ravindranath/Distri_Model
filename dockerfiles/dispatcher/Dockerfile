@@ -12,6 +12,7 @@ RUN git clone https://github.com/Srinivas-Ravindranath/Distri_Model.git
 
 WORKDIR /usr/src/app/Distri_Model
 
+pip install --no-binary=h5py h5py
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
