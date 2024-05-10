@@ -1,0 +1,8 @@
+pymongo
+kafka-python
+pandas
+scikit-learn
+numpy
+tensorflow
+scipy
+gridfs
