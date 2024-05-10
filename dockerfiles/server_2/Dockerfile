@@ -27,4 +27,4 @@ ENV KAFKA_BROKER=localhost:9092
 ENV KAFKA_TOPIC=mytopic
 
 # Run app.py when the container launches
-CMD ["python", "./server/server_1.py"]
+CMD ["python", "./server/server_2.py"]
