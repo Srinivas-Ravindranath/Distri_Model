@@ -25,7 +25,8 @@ if __name__ == "__main__":
 
     if not mongo_cli.file_in_gridfs("output_part1.txt"):
         print("Running server1.py to generate output_1.txt")
-        producer.send("partial_inference_1", value=json.dumps({'inference_exists': "False"}).encode('utf-8'))
+        data = json.dumps({'inference_exists': "False"})
+        producer.send("partial_inference_1", value=data.encode('utf-8'))
         # run_training_part_1()
 
     if not mongo_cli.file_in_gridfs("output_part2.txt"):
