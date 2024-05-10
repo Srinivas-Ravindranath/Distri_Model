@@ -1,10 +1,7 @@
 import json
 import numpy as np
 from scipy.spatial.distance import cdist
-
-from tensorflow.keras.models import load_model
-from mongo_db import MongoDB
-from kafka_handler import kakfa_handler
+from mongo_db.mongo_db import MongoDB
 
 from load import load_data
 
