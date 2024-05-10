@@ -26,16 +26,40 @@ if __name__ == "__main__":
     if not mongo_cli.file_in_gridfs("output_part1.txt"):
         print("Running server1.py to generate output_1.txt")
         producer.send("partial_inference_1", value=json.dumps({'inference_exists': "False"}))
-        # run_training_part_1()
+        consumer.subscribe("partial_inference_1")
+        didConsumeMessage = False
+        while not didConsumeMessage:
+            message = consumer.poll(6000)
+            if message is None:
+                continue
+            for topic, messages in message.items():
+                for message in messages:
+                    if message['inference_exists'] == "True":
+                        didConsumeMessage = True
+                        break
+
+            consumer.close()
+            if didConsumeMessage:
+                break
+
 
     if not mongo_cli.file_in_gridfs("output_part2.txt"):
         print("Running server2.py to generate output_2.txt")
-        producer.send("partial_inference_2", value=json.dumps({'inference_exists': "False"}))
-        # run_training_part_2()
-
-    # if not mongo_cli.file_in_gridfs("output_part3.txt"):
-    #     print("Running server2.py to generate output_3.txt")
-    #     run_training_part_3()
+        producer.send("partial_inference_2", value=json.dumps({'inference_exists': "False"}).encode('utf-8'))
+        consumer.subscribe("partial_inference_2")
+        didConsumeMessage = False
+        while not didConsumeMessage:
+            message = consumer.poll(6000)
+            if message is None:
+                continue
+            for topic, messages in message.items():
+                for message in messages:
+                    if message['inference_exists'] == "True":
+                        didConsumeMessage = True
+                        break
+            consumer.close()
+            if didConsumeMessage:
+                break
 
     consumer.subscribe(topics=["song-ids", "recommendation"])
 
