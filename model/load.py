@@ -1,7 +1,5 @@
-from tensorflow.keras.models import load_model
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from scipy.spatial.distance import cdist
 import numpy as np
 
 
