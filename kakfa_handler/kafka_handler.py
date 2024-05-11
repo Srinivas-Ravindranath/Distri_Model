@@ -2,6 +2,7 @@ from kafka import KafkaConsumer
 from kafka import KafkaProducer
 import json
 import logging
+import os
 
 from Logger.formatter import CustomFormatter
 
@@ -18,7 +19,8 @@ logger.addHandler(ch)
 
 class KafkaHandler:
     def __init__(self):
-        self.KAFKA_BROKER_URL = 'localhost:9092'
+        kafka_host_value = os.getenv("KAFKA_HOSTS")
+        self.KAFKA_BROKER_URL = kafka_host_value
 
     def initialize_kafka_consumer(self):
         # Kafka consumer configuration

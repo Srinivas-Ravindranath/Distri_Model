@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import gridfs
 from io import StringIO
 import logging
+import os
 
 from Logger.formatter import CustomFormatter
 
@@ -18,7 +19,8 @@ logger.addHandler(ch)
 class MongoDB:
 
     def __init__(self):
-        self.url = 'mongodb://localhost:27017/'
+        mongo_host_url = os.getenv("MONGO_HOST")
+        self.url = mongo_host_url
         self.client = MongoClient(self.url)
         self.db = self.client["file_store"]
         self.fs = gridfs.GridFS(self.db)
