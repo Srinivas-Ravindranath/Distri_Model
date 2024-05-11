@@ -1,6 +1,19 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import numpy as np
+import logging
+
+from Logger.formatter import CustomFormatter
+
+# Logger setup
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+ch.setFormatter(CustomFormatter())
+logger.addHandler(ch)
 
 
 def load_data(filename):

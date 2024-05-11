@@ -1,5 +1,18 @@
 from tensorflow.keras.models import load_model, Model
 from tensorflow.keras.layers import Input, concatenate
+import logging
+
+from Logger.formatter import CustomFormatter
+
+# Logger setup
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+ch.setFormatter(CustomFormatter())
+logger.addHandler(ch)
 
 
 def split_model():

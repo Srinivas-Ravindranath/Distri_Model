@@ -1,6 +1,19 @@
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
 import json
+import logging
+
+from Logger.formatter import CustomFormatter
+
+# Logger setup
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+ch.setFormatter(CustomFormatter())
+logger.addHandler(ch)
 
 
 class KafkaHandler:
@@ -15,7 +28,6 @@ class KafkaHandler:
             bootstrap_servers=[self.KAFKA_BROKER_URL],
             auto_offset_reset='latest',
             enable_auto_commit=True,
-            # api_version=(0, 11, 5),
             value_deserializer=lambda m: json.loads(m.decode('utf-8')) if m else None
         )
 

@@ -1,10 +1,21 @@
 import json
+import logging
 import numpy as np
 from tensorflow.keras.models import load_model
 from mongo_db.mongo_db import MongoDB
 from kakfa_handler.kafka_handler import KafkaHandler
 
+from Logger.formatter import CustomFormatter
 
+# Logger setup
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+ch.setFormatter(CustomFormatter())
+logger.addHandler(ch)
 
 def inference_part_2():
     model_part2 = load_model('RnnModel/model_part2.h5')
@@ -33,8 +44,12 @@ def process_kafka_messages():
             for message in messages:
                 json_value = json.loads(message.value)
                 if json_value['inference_exists'] == "False":
+                    logger.info("Message received")
+                    logger.info("Running inference part 2")
                     inference_part_2()
+                    logger.info("Inference part 2 complete")
                     producer.send("partial-inference-2", value=json.dumps({"inference_exists": "True"}))
+                    logger.info("Sent partial-inference-2 message")
     consumer.close()
 
 

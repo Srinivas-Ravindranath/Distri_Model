@@ -1,10 +1,22 @@
 import json
 import numpy as np
+import logging
 from tensorflow.keras.models import load_model
 from mongo_db.mongo_db import MongoDB
 from kakfa_handler.kafka_handler import KafkaHandler
 from model.recomendation import get_reccomendations
 
+from Logger.formatter import CustomFormatter
+
+# Logger setup
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+ch.setFormatter(CustomFormatter())
+logger.addHandler(ch)
 
 def run_training_part_3():
 
@@ -36,12 +48,13 @@ def process_kafka_messages():
             continue
         for topic, messages in message.items():
             for message in messages:
-                print("Received final-recommendation message")
-                print(message.value)
+                logger.info("Received final-recommendation message")
+                logger.info(message.value)
                 track_id_list = message.value.split(",")
                 results = get_reccomendations(predictions=prediction, track_id_list=track_id_list)
-                print("final results: ", results)
+                logger.info("final results: ", results)
                 producer.send("recommendation", value=json.dumps(results))
+                logger.info("Sent recommendation message")
     consumer.close()
 
 
