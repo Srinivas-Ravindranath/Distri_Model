@@ -11,17 +11,15 @@ def run_training_part_3():
     mongo_cli = MongoDB()
     model_part3 = load_model('RnnModel/model_part3.h5')
 
-    # if not mongo_cli.file_in_gridfs("output_part3.txt"):
-    #     data_buffer = mongo_cli.read_file_from_gridfs(file_name='output_part2.txt')
-    #     input_data = np.loadtxt(data_buffer)
-    #     predictions = model_part3.predict(input_data)
-    #     np.savetxt('output_part3.txt', predictions)
-    #     mongo_cli.add_file_to_gridfs(file_path='output_part3.txt')
+    if not mongo_cli.file_in_gridfs("output_part3.txt"):
+        data_buffer = mongo_cli.read_file_from_gridfs(file_name='output_part2.txt')
+        input_data = np.loadtxt(data_buffer)
+        predictions = model_part3.predict(input_data)
+        np.savetxt('output_part3.txt', predictions)
+        mongo_cli.add_file_to_gridfs(file_path='output_part3.txt')
 
-    # data_buffer = mongo_cli.read_file_from_gridfs(file_name='output_part3.txt')
-    # input_data = np.loadtxt(data_buffer)
-    input_data = np.loadtxt('output_part3.txt')
-    #final_prediction = model_part3.predict(input_data)
+    data_buffer = mongo_cli.read_file_from_gridfs(file_name='output_part3.txt')
+    input_data = np.loadtxt(data_buffer)
     return input_data
 
 
@@ -31,12 +29,11 @@ def process_kafka_messages():
     consumer = kafka_handler.initialize_kafka_consumer()
     producer = kafka_handler.initialize_kafka_producer()
 
-    consumer.subscribe(topics=["final-recommendation"])
+    consumer.subscribe(topics=["partial-inference-3"])
     while True:
         message = consumer.poll(3000)
         if message is None:
             continue
-        print(message.items())
         for topic, messages in message.items():
             for message in messages:
                 print("Received final-recommendation message")

@@ -3,7 +3,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 from mongo_db.mongo_db import MongoDB
 
-from load import load_data
+from model.load import load_data
 
 def loadPreadition():
     mongo_cli = MongoDB()

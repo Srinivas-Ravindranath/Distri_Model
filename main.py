@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     if not mongo_cli.file_in_gridfs("output_part1.txt"):
         print("Running server1.py to generate output_1.txt")
-        producer.send("partial_inference_1", value=json.dumps({'inference_exists': "False"}))
-        consumer.subscribe("partial_inference_1")
+        producer.send("partial-inference-1", value=json.dumps({"inference_exists": "False"}))
+        consumer.subscribe("partial-inference-1")
         didConsumeMessage = False
         while not didConsumeMessage:
             message = consumer.poll(6000)
@@ -34,19 +34,20 @@ if __name__ == "__main__":
                 continue
             for topic, messages in message.items():
                 for message in messages:
-                    if message['inference_exists'] == "True":
+                    json_value = json.loads(message.value)
+                    if json_value['inference_exists'] == "True":
+                        print("Message received")
                         didConsumeMessage = True
                         break
 
-            consumer.close()
+            # consumer.close()
             if didConsumeMessage:
                 break
 
-
     if not mongo_cli.file_in_gridfs("output_part2.txt"):
         print("Running server2.py to generate output_2.txt")
-        producer.send("partial_inference_2", value=json.dumps({'inference_exists': "False"}).encode('utf-8'))
-        consumer.subscribe("partial_inference_2")
+        producer.send("partial-inference-2", value=json.dumps({"inference_exists": "False"}))
+        consumer.subscribe("partial-inference-2")
         didConsumeMessage = False
         while not didConsumeMessage:
             message = consumer.poll(6000)
@@ -54,10 +55,11 @@ if __name__ == "__main__":
                 continue
             for topic, messages in message.items():
                 for message in messages:
-                    if message['inference_exists'] == "True":
+                    json_value = json.loads(message.value)
+                    if json_value['inference_exists'] == "True":
                         didConsumeMessage = True
                         break
-            consumer.close()
+            # consumer.close()
             if didConsumeMessage:
                 break
 
@@ -71,12 +73,16 @@ if __name__ == "__main__":
 
         for topic, messages in message.items():
             for message in messages:
+                count = 0
                 if topic.topic == "song-ids":
                     print("Received song-ids message")
                     songs = []
                     for song in message.value:
                         songs.append(song['trackId'])
-                    producer.send("final-recommendation", value=','.join(songs))
+                    print("sending final-recommendation message")
+                    print(count)
+                    producer.send("partial-inference-3", value=','.join(songs))
+                    count += 1
 
                 elif topic.topic == "recommendation":
                     print("Received recommendation message")

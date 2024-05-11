@@ -24,14 +24,18 @@ def process_kafka_messages():
     consumer = kafka_handler.initialize_kafka_consumer()
     producer = kafka_handler.initialize_kafka_producer()
 
-    consumer.subscribe(topics=["partial_inference_2"])
+    consumer.subscribe(topics=["partial-inference-2"])
     while True:
         message = consumer.poll(3000)
         if message is None:
             continue
         for topic, messages in message.items():
             for message in messages:
-                if message.value['inference_exists'] == "False":
+                json_value = json.loads(message.value)
+                if json_value['inference_exists'] == "False":
                     inference_part_2()
-                    producer.send("partial_inference_2", value=json.dumps({'inference_exists': True}).encode('utf-8'))
+                    producer.send("partial-inference-2", value=json.dumps({"inference_exists": "True"}))
     consumer.close()
+
+
+process_kafka_messages()
