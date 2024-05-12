@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     libhdf5-dev
 
+ENV PYTHONPATH="/usr/src/app/Distri_Model:${PYTHONPATH}"
+
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
@@ -28,4 +30,4 @@ RUN pip install --no-binary=h5py h5py && \
 EXPOSE 9092
 
 # Run app.py when the container launches
-CMD ["python", "./server/server_2.py"]
+CMD ["python", "server/server2.py"]
