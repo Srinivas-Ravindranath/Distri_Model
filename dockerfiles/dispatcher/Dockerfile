@@ -5,14 +5,19 @@ FROM python:3.9
 RUN apt-get update && apt-get install -y \
     git \
     pkg-config \
-    libhdf5-dev
+    libhdf5-dev \
+    wget
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
 RUN git clone https://github.com/Srinivas-Ravindranath/Distri_Model.git
 
-# Change to the Distry_Model directory
+# Download the dataset
+WORKDIR /usr/src/app/Distri_Model/Dataset
+
+RUN wget -O spotify_data.csv "https://www.dropbox.com/scl/fi/i75lq9ys6vkekbbv3cokh/spotify_data.csv?rlkey=pwae21vg20se9huy7i57fyn3l&st=1ziyuhlw&dl=0"
+
 WORKDIR /usr/src/app/Distri_Model
 
 RUN pip install --no-binary=h5py h5py && \
@@ -21,9 +26,6 @@ RUN pip install --no-binary=h5py h5py && \
 # Make port 9092 available to the world outside this container
  EXPOSE 9092
 
-# Define environment variable
-ENV KAFKA_BROKER=localhost:9092
-ENV KAFKA_TOPIC=mytopic
-
 # Run app.py when the container launches
-CMD ["python", "./main.py"]
+#CMD ["python", "./main.py"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
