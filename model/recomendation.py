@@ -64,5 +64,6 @@ def get_reccomendations(predictions, track_id_list, top_n=5):
     recommended_indices = np.argsort(similarities[0])[:top_n + len(selected_indices)]
     recommended_indices = [idx for idx in recommended_indices if idx not in selected_indices][:top_n]
 
-    logger.info(df.iloc[recommended_indices][['artist_name', 'track_name', 'track_id']])
-    return json.dumps(df.iloc[recommended_indices][['artist_name', 'track_name', 'track_id']].to_dict('records'))
+    recommendation = df.iloc[recommended_indices][['artist_name', 'track_name', 'track_id']].rename(columns={'track_id': 'trackId'})
+    logger.info(recommendation)
+    return json.dumps(recommendation.to_dict('records'))
