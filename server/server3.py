@@ -53,7 +53,7 @@ def process_kafka_messages():
                 track_id_list = message.value.split(",")
                 results = get_reccomendations(predictions=prediction, track_id_list=track_id_list)
                 logger.info("final results: ", results)
-                producer.send("recommendation", value=json.dumps(results))
+                producer.send("recommendation", value=results)
                 logger.info("Sent recommendation message")
     consumer.close()
 
