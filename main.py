@@ -101,8 +101,9 @@ if __name__ == "__main__":
 
                 elif topic.topic == "recommendation":
                     logger.info("Received recommendation message")
-                    logger.info(message.value)
+                    finalResult = json.loads(message.value)
+                    logger.info(finalResult)
                     logger.info("Sending final-recommendation message")
-                    producer.send("final-recommendation", value=json.dumps(message.value))
+                    producer.send("final-recommendation", value=finalResult)
 
     consumer.close()
