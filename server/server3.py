@@ -65,11 +65,14 @@ def process_kafka_messages():
                 logger.info("Received final-recommendation message")
                 logger.info(message.value)
                 track_id_list = message.value.split(",")
+                # from the final model inference getting the user recommendation
+                # based on user songs selection
                 results = get_reccomendations(predictions=prediction, track_id_list=track_id_list)
                 logger.info("final results: ", results)
+                # Sending the final recommended songs back to dispatcher node
                 producer.send("recommendation", value=results)
                 logger.info("Sent recommendation message")
-    consumer.close()
+    consumer.close()  # Closing the consumer
 
 
 # Run the function
